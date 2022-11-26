@@ -1,6 +1,7 @@
 package com.testeXbrain.testeXbrain.services;
 
 import com.testeXbrain.testeXbrain.DTOs.VendedorDTO;
+import com.testeXbrain.testeXbrain.exceptions.EntidadeNaoEncontrada;
 import com.testeXbrain.testeXbrain.model.Vendedor;
 import com.testeXbrain.testeXbrain.repositories.VendedorRepository;
 import org.modelmapper.ModelMapper;
@@ -16,8 +17,6 @@ public class VendedorServices {
     @Autowired
     private VendedorRepository vendedorRepository;
 
-    @Autowired
-    private VendaServices vendaServices;
 
     public List<VendedorDTO> findAllVendedorDTO() {
         ModelMapper modelMapper = new ModelMapper();
@@ -28,17 +27,21 @@ public class VendedorServices {
 
     public VendedorDTO findByIdVendedorDTO(Long id) {
         ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(vendedorRepository.findById(id), VendedorDTO.class);
+        return modelMapper.map(vendedorRepository.getById(id), VendedorDTO.class);
     }
 
-    public void save(VendedorDTO vendedorDTO) {
+    public Vendedor getById(Long id){
+        return vendedorRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontrada(Vendedor.class, id));
+    }
+
+    public void salvarVendedor(VendedorDTO vendedorDTO) {
         Vendedor vendedor;
         boolean existeVendedor;
         boolean existeNomeVendedor = false;
         boolean condicaoParaUpdate = vendedorDTO.getId() != null && vendedorDTO.getId() > 0;
 
         if (condicaoParaUpdate) {
-            vendedor = vendedorRepository.findById(vendedorDTO.getId()).get();
+            vendedor = vendedorRepository.getById(vendedorDTO.getId());
             existeVendedor = true;
             Optional<Vendedor> nome = vendedorRepository.findByNome(vendedorDTO.getNome());
             if (nome.isPresent() && nome.get().getId() != vendedorDTO.getId()) {
@@ -55,7 +58,7 @@ public class VendedorServices {
             }
         }
 
-        if (existeNomeVendedor == false) {
+        if ((existeVendedor == true && existeNomeVendedor == true) || (existeVendedor == false && existeNomeVendedor == false)) {
             vendedor.setId(vendedorDTO.getId());
             vendedor.setNome(vendedorDTO.getNome());
             vendedorRepository.save(vendedor);
@@ -63,4 +66,12 @@ public class VendedorServices {
             throw new IllegalArgumentException("Esse nome de vendedor já existe");
         }
     }
+
+    public void save(Vendedor vendedor){
+        vendedorRepository.save(vendedor);
+    }
+
+//    public void delete(Long id){
+//        vendedorRepository.deleteById(id);
+//    }
 }

@@ -1,7 +1,9 @@
 package com.testeXbrain.testeXbrain.services;
 
 import com.testeXbrain.testeXbrain.DTOs.VendaDTO;
+import com.testeXbrain.testeXbrain.DTOs.VendaSemDataDTO;
 import com.testeXbrain.testeXbrain.DTOs.VendedorDTO;
+import com.testeXbrain.testeXbrain.exceptions.EntidadeNaoEncontrada;
 import com.testeXbrain.testeXbrain.model.Venda;
 import com.testeXbrain.testeXbrain.model.Vendedor;
 import com.testeXbrain.testeXbrain.repositories.VendaRepository;
@@ -10,6 +12,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +24,10 @@ public class VendaServices {
     @Autowired
     private VendaRepository vendaRepository;
 
+    @Autowired
+    private VendedorServices vendedorServices;
+
+
     public List<VendaDTO> findAllVendaDTO() {
         ModelMapper modelMapper = new ModelMapper();
         return vendaRepository.findAll().stream()
@@ -29,23 +37,22 @@ public class VendaServices {
 
     public VendaDTO findByIdVendaDTO(Long id) {
         ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(vendaRepository.findById(id), VendaDTO.class);
+        Venda venda = vendaRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontrada(Venda.class, id));
+        return modelMapper.map(venda, VendaDTO.class);
     }
 
-    public void save(VendaDTO vendaDTO) {
-        Venda venda;
+    public void novaVenda(Long vendedorId , VendaSemDataDTO vendaSemDataDTO) {
+        Venda venda = new Venda();
+        Vendedor vendedor = vendedorServices.getById(vendedorId);
 
-        if (vendaDTO.getId() != null && vendaDTO.getId() > 0) {
-            venda = vendaRepository.findById(vendaDTO.getId()).get();
-        } else {
-            venda = new Venda();
-        }
-            venda.setId(vendaDTO.getId());
-            venda.setData_venda(vendaDTO.getData_venda());
-            venda.setValor(vendaDTO.getValor());
-            venda.setVendedor(vendaDTO);
-            vendaRepository.save(venda);
+        Instant data = Instant.now();
+        venda.setData_venda(data);
+        venda.setValor(vendaSemDataDTO.getValor());
+        venda.setVendedor(vendedor);
+        vendedor.getVendas().add(venda);
 
+        vendaRepository.save(venda);
+        vendedorServices.save(vendedor);
     }
 
 }
