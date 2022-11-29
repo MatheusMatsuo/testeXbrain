@@ -3,6 +3,7 @@ package com.testeXbrain.testeXbrain.services;
 import com.testeXbrain.testeXbrain.DTOs.VendaDTO;
 import com.testeXbrain.testeXbrain.DTOs.VendaSemDataDTO;
 import com.testeXbrain.testeXbrain.DTOs.VendedorDTO;
+import com.testeXbrain.testeXbrain.DTOs.VendedorGetDTO;
 import com.testeXbrain.testeXbrain.exceptions.EntidadeNaoEncontrada;
 import com.testeXbrain.testeXbrain.model.Venda;
 import com.testeXbrain.testeXbrain.model.Vendedor;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,8 +48,11 @@ public class VendaServices {
         Venda venda = new Venda();
         Vendedor vendedor = vendedorServices.getById(vendedorId);
 
-        Instant data = Instant.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String dataFormatado = LocalDate.now().format(formatter);
+        LocalDate data = LocalDate.parse(dataFormatado, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         venda.setData_venda(data);
+
         venda.setValor(vendaSemDataDTO.getValor());
         venda.setVendedor(vendedor);
         vendedor.getVendas().add(venda);
@@ -55,4 +61,7 @@ public class VendaServices {
         vendedorServices.save(vendedor);
     }
 
+    public List<Venda> findByVendasPeriodo(LocalDate dataInicial, LocalDate dataFinal){
+        return vendaRepository.findByVendasPeriodo(dataInicial, dataFinal);
+    }
 }
