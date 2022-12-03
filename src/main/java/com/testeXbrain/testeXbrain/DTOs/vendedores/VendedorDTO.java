@@ -1,4 +1,4 @@
-package com.testeXbrain.testeXbrain.DTOs;
+package com.testeXbrain.testeXbrain.DTOs.vendedores;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.testeXbrain.testeXbrain.model.Venda;
@@ -18,9 +18,9 @@ public class VendedorDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    @NotEmpty(message = "Campo nome é obrigatório")
+    @NotBlank(message = "Campo nome é obrigatório")
     private String nome;
 
     @Nullable
-    private Collection<Venda> collectionVendas;
+    private Collection<Venda> vendas;
 }

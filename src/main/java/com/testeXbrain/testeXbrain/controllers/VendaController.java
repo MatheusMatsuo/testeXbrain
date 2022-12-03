@@ -1,17 +1,15 @@
 package com.testeXbrain.testeXbrain.controllers;
 
-import com.testeXbrain.testeXbrain.DTOs.VendaDTO;
-import com.testeXbrain.testeXbrain.DTOs.VendaSemDataDTO;
+import com.testeXbrain.testeXbrain.DTOs.vendas.VendaDTO;
+import com.testeXbrain.testeXbrain.DTOs.vendas.VendaSemDataDTO;
 import com.testeXbrain.testeXbrain.model.Venda;
-import com.testeXbrain.testeXbrain.services.VendaServices;
+import com.testeXbrain.testeXbrain.services.VendaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -19,7 +17,7 @@ import java.util.List;
 public class VendaController {
 
     @Autowired
-    private VendaServices vendaServices;
+    private VendaService vendaServices;
     @GetMapping
     public List<VendaDTO> findAllVendaDTO() {
         return vendaServices.findAllVendaDTO();

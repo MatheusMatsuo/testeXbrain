@@ -1,9 +1,9 @@
 package com.testeXbrain.testeXbrain.controllers;
 
-import com.testeXbrain.testeXbrain.DTOs.VendedorDTO;
-import com.testeXbrain.testeXbrain.DTOs.VendedorGetDTO;
+import com.testeXbrain.testeXbrain.DTOs.vendedores.VendedorDTO;
+import com.testeXbrain.testeXbrain.DTOs.vendedores.VendedorGetDTO;
 import com.testeXbrain.testeXbrain.model.Vendedor;
-import com.testeXbrain.testeXbrain.services.VendedorServices;
+import com.testeXbrain.testeXbrain.services.VendedorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ import java.util.List;
 public class VendedorController {
 
     @Autowired
-    private VendedorServices vendedorServices;
+    private VendedorService vendedorServices;
 
     @GetMapping
     public List<VendedorDTO> findAllVendedorDTO(){
@@ -29,8 +29,8 @@ public class VendedorController {
     }
 
     @PostMapping
-    public void salvarVendedor(@Valid @RequestBody VendedorDTO vendedorDTO){
-        vendedorServices.salvarVendedor(vendedorDTO);
+    public Vendedor salvarVendedor(@Valid @RequestBody VendedorDTO vendedorDTO){
+        return vendedorServices.salvarVendedor(vendedorDTO);
     }
 //    @DeleteMapping
 //    public void delete(@PathVariable Long id){
@@ -38,9 +38,16 @@ public class VendedorController {
 //    }
 
     @GetMapping(value = "/listaVendedores")
-    public List<VendedorGetDTO> retornaVendedores(@RequestParam("dataInicial")
-                                                  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataInicial, @RequestParam("dataFinal")
-                                                  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataFinal){
-        return vendedorServices.retornaVendedores(dataInicial,dataFinal);
+    public List<VendedorGetDTO> retornaVendedoresPorPeriodo(@RequestParam("dataInicial")
+                                                  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data_inicial, @RequestParam("dataFinal")
+                                                  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data_final){
+        return vendedorServices.retornaVendedoresPorPeriodo(data_inicial,data_final);
+    }
+
+    @GetMapping(value = "/listaVendedor/{vendedor_id}")
+    public VendedorGetDTO retornaVendedorPorPeriodo(@PathVariable Long vendedor_id, @RequestParam("dataInicial")
+                                                    @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data_inicial, @RequestParam("dataFinal")
+                                                    @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data_final){
+        return vendedorServices.retornaVendedorPorPeriodo(vendedor_id, data_inicial,data_final);
     }
 }

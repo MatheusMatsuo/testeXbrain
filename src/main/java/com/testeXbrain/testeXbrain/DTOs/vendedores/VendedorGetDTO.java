@@ -1,4 +1,4 @@
-package com.testeXbrain.testeXbrain.DTOs;
+package com.testeXbrain.testeXbrain.DTOs.vendedores;
 
 import com.testeXbrain.testeXbrain.model.Venda;
 import lombok.Getter;
@@ -17,6 +17,6 @@ public class VendedorGetDTO implements Serializable {
     private Long id;
 
     private String nome;
-    private Long totalVendas;
-    private Double mediaVendasDiaria;
+    private Long total_vendas;
+    private Double media_vendas_diaria;
 }

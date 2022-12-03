@@ -1,34 +1,27 @@
 package com.testeXbrain.testeXbrain.services;
 
-import com.testeXbrain.testeXbrain.DTOs.VendaDTO;
-import com.testeXbrain.testeXbrain.DTOs.VendaSemDataDTO;
-import com.testeXbrain.testeXbrain.DTOs.VendedorDTO;
-import com.testeXbrain.testeXbrain.DTOs.VendedorGetDTO;
+import com.testeXbrain.testeXbrain.DTOs.vendas.VendaDTO;
+import com.testeXbrain.testeXbrain.DTOs.vendas.VendaSemDataDTO;
 import com.testeXbrain.testeXbrain.exceptions.EntidadeNaoEncontrada;
 import com.testeXbrain.testeXbrain.model.Venda;
 import com.testeXbrain.testeXbrain.model.Vendedor;
 import com.testeXbrain.testeXbrain.repositories.VendaRepository;
-import com.testeXbrain.testeXbrain.repositories.VendedorRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class VendaServices {
+public class VendaService {
     @Autowired
     private VendaRepository vendaRepository;
 
     @Autowired
-    private VendedorServices vendedorServices;
+    private VendedorService vendedorServices;
 
 
     public List<VendaDTO> findAllVendaDTO() {
@@ -44,9 +37,9 @@ public class VendaServices {
         return modelMapper.map(venda, VendaDTO.class);
     }
 
-    public void novaVenda(Long vendedorId , VendaSemDataDTO vendaSemDataDTO) {
+    public void novaVenda(Long vendedor_id , VendaSemDataDTO vendaSemDataDTO) {
         Venda venda = new Venda();
-        Vendedor vendedor = vendedorServices.getById(vendedorId);
+        Vendedor vendedor = vendedorServices.getById(vendedor_id);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String dataFormatado = LocalDate.now().format(formatter);
@@ -61,7 +54,7 @@ public class VendaServices {
         vendedorServices.save(vendedor);
     }
 
-    public List<Venda> findByVendasPeriodo(LocalDate dataInicial, LocalDate dataFinal){
-        return vendaRepository.findByVendasPeriodo(dataInicial, dataFinal);
+    public List<Venda> findByVendasPeriodo(LocalDate data_inicial, LocalDate data_final){
+        return vendaRepository.findByVendasPeriodo(data_inicial, data_final);
     }
 }

@@ -1,12 +1,13 @@
-package com.testeXbrain.testeXbrain.DTOs;
+package com.testeXbrain.testeXbrain.DTOs.vendas;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.testeXbrain.testeXbrain.DTOs.vendedores.VendedorDTO;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 public class VendaSemDataDTO implements Serializable {
@@ -14,7 +15,6 @@ public class VendaSemDataDTO implements Serializable {
 
     private Long id;
 
-    @NotNull(message = "Campo valor é obrigatório")
     private Double valor;
 
     private VendedorDTO vendedor;
